@@ -7,10 +7,10 @@ import "./index.scss";
 const App = () => {
   const [users, setUsers] = useState([]);
   const [photos, setPhotos] = useState([]);
-  const [posts, setPosts] = useState([]);
+  const [Todos, setTodos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showPhotos, setShowPhotos] = useState(true);
-  const [showPosts, setShowPosts] = useState(false);
+  const [showTodos, setShowTodos] = useState(false);
   const [activeUserId, setActiveUserId] = useState(null);
 
   useEffect(() => {
@@ -31,15 +31,15 @@ const App = () => {
       });
   }, []);
 
-  const fetchPosts = (userId) => {
+  const fetchTodos = (userId) => {
     setLoading(true);
     axios
-      .get(`https://jsonplaceholder.typicode.com/posts?userId=${userId}`)
-      .then((res) => setPosts(res.data))
+      .get(`https://jsonplaceholder.typicode.com/todos?userId=${userId}`)
+      .then((res) => setTodos(res.data))
       .catch((error) => console.error("Error:", error))
       .finally(() => {
         setLoading(false);
-        setShowPosts(true);
+        setShowTodos(true);
         setActiveUserId(userId);
         setShowPhotos(false);
       });
@@ -47,7 +47,7 @@ const App = () => {
 
   const showGallery = () => {
     setShowPhotos(true);
-    setShowPosts(false);
+    setShowTodos(false);
   };
 
   const userElements = users.map((user) => (
@@ -70,7 +70,7 @@ const App = () => {
         {user.username}
       </p>
       <div className="user_buttons">
-        <button className="animated-button" onClick={() => fetchPosts(user.id)}>
+        <button className="animated-button" onClick={() => fetchTodos(user.id)}>
           USER POSTS
         </button>
         <button className="animated-button" onClick={showGallery}>
@@ -96,10 +96,16 @@ const App = () => {
       </div>
     ));
 
-  const postElements = posts.map((post) => (
-    <div key={post.id} className="post photo">
-      <h3>{post.title}</h3>
-      <p>{post.body}</p>
+  const todoElements = Todos.map((todo) => (
+    <div key={todo.id} className="todo photo">
+      <p>
+        <span>post: </span>
+        {todo.userId}
+      </p>
+      <p>
+        <span>title: </span>
+        {todo.title}
+      </p>
     </div>
   ));
 
@@ -117,12 +123,12 @@ const App = () => {
           ) : (
             <>
               {showPhotos && <div className="photos">{photoElements}</div>}
-              {showPosts && activeUserId && (
+              {showTodos && activeUserId && (
                 <div
-                  className="posts photos"
+                  className="Todos photos"
                   style={{ display: showPhotos ? "none" : "inline" }}>
-                  {/* <h2>Posts by User {activeUserId}</h2> */}
-                  {postElements}
+                  {/* <h2>Todos by User {activeUserId}</h2> */}
+                  {todoElements}
                 </div>
               )}
             </>
